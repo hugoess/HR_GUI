@@ -14,6 +14,9 @@ import threading
 import random
 
 
+
+
+#change test for Github 
 from numpy import arange, sin, pi
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 # implement the default mpl key bindings
@@ -30,7 +33,7 @@ import sys
 #dir = "C:\\Users\\Hosokawa\\Dropbox\\＜やること＞\\心拍データ処理"
 dir = "C:\\Users\\admin\\Desktop\\サルビデオ解析\\heartbeat rate"
 import sys; sys.path.append(dir)
-import subfuncs as myfunc
+#import subfuncs as myfunc
 
 import matplotlib
 matplotlib.use('TkAgg')
@@ -176,40 +179,53 @@ def on_pick(event):
 i = 1
 fig = Figure(figsize=(6,6))
 ax = fig.add_subplot(111)
-
+#i_200 = 1
+#i_400 = 200
 
 
 
 def next_page():
 
-    global i,ax, fig, canvas, t2, v2
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
+#    global ax, fig, canvas, t2, v2, window,
+#    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
+
     i = i+1
     i_200 = (i-1)*200+1
     i_400 = i*200
     t2 = v_time[i_200:i_400]
     v2 = v_volt_hb[i_200:i_400]
-    print(i)
+    print('%d ~ %d' % (i_200,i_400))
     ax.clear()
     plot()
     
 def previous_page():
     
-    global i,ax, fig, canvas, t2, v2
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
+#    global ax, fig, canvas, t2, v2, window
+#    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
+
     i = i -1
     i_200 = (i-1)*200+1
     i_400 = i*200
     t2 = v_time[i_200:i_400]
     v2 = v_volt_hb[i_200:i_400]
-    print(i)
+    print('%d ~ %d' % (i_200,i_400))
     ax.clear()
     plot()
 
 def count_low():
     
-    global i,ax, fig, canvas, t2, v2
+    pass
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
+
     v2 = volt_hb_low[1:200]
     
-
+    
+def count_high():
+    
+    pass
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
     
 
 
@@ -277,15 +293,18 @@ def count_low():
 def plot():
 #        t2 = v_time[1:200]
 #        v2 = v_volt_hb[1:200]
-    global ax, fig, canvas, t2, v2, window
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
+#    global ax, fig, canvas, t2, v2, window
+#    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
+
 #    fig = Figure(figsize=(6,6))
 #    ax = fig.add_subplot(111)
     ax.plot(t2, v2, 'o-', picker=1)
     ax.invert_yaxis()
 
     
-#    pretitle = str(str(i_200),'~',str(i_400))
-    ax.set_title ("~", fontsize=16)
+    pretitle =('%d ~ %d' % (i_200,i_400))
+    ax.set_title (str(pretitle), fontsize=16)
     ax.set_ylabel("Voltage", fontsize=14)
     ax.set_xlabel("Time(s)", fontsize=14)
 
@@ -296,8 +315,8 @@ def plot():
 #    fig.canvas.draw()
 #        fig.canvas.mpl_connect('pick_event', onpick)
     fig.canvas.mpl_connect('pick_event', on_pick)
-    print('hi')
-    print(t2)
+#    print('hi')
+#    print(t2)
 
 window= Tk()
 button = Button(window, text="check", command=plot)
@@ -306,6 +325,16 @@ button_2 = Button(window, text='Previous Page', command = previous_page)
 button_2.grid(row = 1, column = 0, sticky = W)
 button_1 = Button(window, text='Next Page', command = next_page)
 button_1.grid(row = 1, column = 0, sticky = E)
+
+radio_1 = Radiobutton(window, text = 'Low', command = count_low)
+radio_1.deselect()
+radio_1.grid(row=0, column= 0, sticky = W)
+radio_2 = Radiobutton(window, text = 'High', command = count_high)
+radio_2.deselect()
+radio_2.grid(row=0, column= 0, sticky = E)
+#l = Label(root, text = '')
+#l.pack()
+
 
 
 quitbtn = Button(window, text = 'Quit', command = window.destroy)
