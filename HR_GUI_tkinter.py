@@ -13,7 +13,9 @@ import _thread
 import threading
 import random
 
-
+# =============================================================================
+# いろいろインポートImport
+# =============================================================================
 
 
 #change test for Github 
@@ -55,6 +57,10 @@ v_volt_hb_1     = []
 v_volt_on_off   = []
 v_volt_on_off_1 = []
 
+# =============================================================================
+# ファイル読み込みと正規表現でデータを取り出す
+# =============================================================================
+
 # サンプリング間隔
 sampling = 0
 ptn1 = re.compile(r"Delta_X\t([0-9]+\.[0-9]+)\t([0-9]+\.[0-9]+)")
@@ -73,6 +79,9 @@ while line:
     
 f.close
 #%%
+# =============================================================================
+# #HighとLowデータの変わり目の番号を算出してここでLow時とHigh時の心拍電圧データに分けた
+# =============================================================================
 
 v_time = np.array(v_time)
 #time_1 = np.array(time)
@@ -95,7 +104,6 @@ volt_hb_splitted = np.split(v_volt_hb, v_data_1)
 
 volt_hb_low =[]
 volt_hb_high=[]
-
 def is_guusuu(xx:list, yy:list):
     for x in range(len(volt_hb_splitted)):
         if x % 2 == 0:            
@@ -127,8 +135,18 @@ volt_hb_high = np.array(volt_hb_high)
 
 
 #%%
+# =============================================================================
+# 変数の初期化
+#　Figureのサイズの指定
+# =============================================================================
+
 t2 = v_time[1:200]
 v2 = v_volt_hb[1:200]
+
+i = 1
+fig = Figure(figsize=(12,6))
+ax = fig.add_subplot(111)
+
 
 #plt.plot(time, volt_hb)
 #plt.plot(t2, v2)
@@ -159,6 +177,8 @@ v2 = v_volt_hb[1:200]
 #
 #fig.canvas.mpl_connect('pick_event', onpick)
 
+
+
 #def on_pick(event):
 #    line = event.artist
 #    xdata, ydata = line.get_data()
@@ -166,6 +186,7 @@ v2 = v_volt_hb[1:200]
 #    print('on pick line:', np.array([xdata[ind], ydata[ind]]))
 
 def on_pick(event):
+    '''Pick eventとText fileへの書き込み'''
     line = event.artist
     xdata, ydata = line.get_data()
     ind = event.ind
@@ -176,22 +197,21 @@ def on_pick(event):
     f.write(str(xdata[ind][0]) + '\t' + str(ydata[ind][0]) + '\n')
     f.close()
 
-i = 1
-fig = Figure(figsize=(12,6))
-ax = fig.add_subplot(111)
+
 #i_200 = 1
 #i_400 = 200
 
 
 def add_nan(event):
+    '''Right clickでnanを書き込む機能、心拍計算時のノイズ対策のために作った'''
     f = open('result.txt', 'a')
-    f.write('nan'+ '\t' +'\n')
+    f.write('nan'+ '\t' +'nan'+'\n')
     f.close()
     print('nan')
 
 
 def next_page():
-
+    '''ボタンクリックで次のページ'''
     global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low
 #    global ax, fig, canvas, t2, v2, window,
 #    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
@@ -214,6 +234,8 @@ def next_page():
     plot()
     
 def previous_page():
+    
+    '''ボタンクリックで前のページ'''
     
     global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low
 #    global ax, fig, canvas, t2, v2, window
@@ -255,6 +277,13 @@ def count_high():
 
 
 def plot():
+    
+    
+    '''FigのSubplotであるaxを指定されているt2,v2でPlotする。
+    タイトルやラベルなどの設定、
+    FigをFigureCanvasTkAggというTypeにしてCanvasと名付けているので、Canvasで描画する指令、
+    及びPick eventのActivation
+    '''
 #        t2 = v_time[1:200]
 #        v2 = v_volt_hb[1:200]
     global ax, fig, canvas, t2, v2, window, i_200, i_400, i,v_volt_high, v_volt_low
@@ -283,15 +312,14 @@ def plot():
 #    print(t2)
 
 window= Tk()
+
 button = Button(window, text="check", command=plot)
 button.grid(row = 0)
 #button_2 = Button(window, text='Previous Page', accelerator = 'D', command = previous_page)
 button_2 = Button(window, text='Previous Page', command = previous_page)
-
 button_2.grid(row = 1, column = 0, sticky = W)
 #button_1 = Button(window, text='Next Page', accelerator = 'A', command = next_page)
 button_1 = Button(window, text='Next Page', command = next_page)
-
 button_1.grid(row = 1, column = 0, sticky = E)
 
 qqq = IntVar()
@@ -302,20 +330,13 @@ radio_1.grid(row=0, column= 0, sticky = W)
 radio_2 = Radiobutton(window, text = 'High', command = count_high, variable = qqq, value = 2)
 #radio_2.deselect()
 radio_2.grid(row=0, column= 0, sticky = E)
-#l = Label(root, text = '')
-#l.pack()
-
-
 
 quitbtn = Button(window, text = 'Quit', command = window.destroy)
 quitbtn.grid(row = 2)
-canvas = FigureCanvasTkAgg(fig, master=window)
 
-
-#canvas.bind('<Button-3>', add_nan)
-
+canvas = FigureCanvasTkAgg(fig, master=window)      #FigをFigureCanvasTkAggというTypeにしてできたObjectをCanvasと名付けている。また、Windowが親であるというOptionも
 canvas.get_tk_widget().bind('<Button-3>', add_nan)
-canvas.get_tk_widget().grid(row = 3)
+canvas.get_tk_widget().grid(row = 3)  #canvas.get_tk_widget()でcanvas = FigureCanvasTkAggをｔｋのwidgetにする。でないと、Bindメソッドが使えない
 
 
 
@@ -323,7 +344,7 @@ canvas.get_tk_widget().grid(row = 3)
 
 
 window.title('HR Counter')
-window.geometry('1200x700')
+window.geometry('1200x700')      #横ｘ縦
 #start= mclass (window)
 
 window.mainloop()
