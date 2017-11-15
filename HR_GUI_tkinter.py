@@ -183,10 +183,16 @@ ax = fig.add_subplot(111)
 #i_400 = 200
 
 
+def add_nan(event):
+    f = open('result.txt', 'a')
+    f.write('nan'+ '\t' +'\n')
+    f.close()
+    print('nan')
+
 
 def next_page():
 
-    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low
 #    global ax, fig, canvas, t2, v2, window,
 #    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
 
@@ -194,14 +200,22 @@ def next_page():
     i_200 = (i-1)*200+1
     i_400 = i*200
     t2 = v_time[i_200:i_400]
-    v2 = v_volt_hb[i_200:i_400]
+    v2 = volt_hb_high[i_200:i_400]
+#    if qqq == 1: 
+#        t2 = v_time[i_200:i_400]
+#        v2 = volt_hb_low[i_200:i_400]
+#        print(qqq)
+#    else:
+#        t2 = v_time[i_200:i_400]
+#        v2 = volt_hb_high[i_200:i_400]   
+    
     print('%d ~ %d' % (i_200,i_400))
     ax.clear()
     plot()
     
 def previous_page():
     
-    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low
 #    global ax, fig, canvas, t2, v2, window
 #    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
 
@@ -209,7 +223,15 @@ def previous_page():
     i_200 = (i-1)*200+1
     i_400 = i*200
     t2 = v_time[i_200:i_400]
-    v2 = v_volt_hb[i_200:i_400]
+    v2 = volt_hb_high[i_200:i_400]
+#    if qqq == 1: 
+#        t2 = v_time[i_200:i_400]
+#        v2 = volt_hb_low[i_200:i_400]
+#        print(qqq)
+#    else:
+#        t2 = v_time[i_200:i_400]
+#        v2 = volt_hb_high[i_200:i_400]        
+        
     print('%d ~ %d' % (i_200,i_400))
     ax.clear()
     plot()
@@ -227,6 +249,120 @@ def count_high():
     pass
     global ax, fig, canvas, t2, v2, window, i_200, i_400, i
     
+
+
+
+
+
+def plot():
+#        t2 = v_time[1:200]
+#        v2 = v_volt_hb[1:200]
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,v_volt_high, v_volt_low
+#    global ax, fig, canvas, t2, v2, window
+#    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
+
+#    fig = Figure(figsize=(6,6))
+#    ax = fig.add_subplot(111)
+    ax.plot(t2, v2, 'o-', picker=1)
+#    ax.invert_yaxis()
+
+    
+    pretitle =('%d ~ %d' % (i_200,i_400))
+    ax.set_title (str(pretitle), fontsize=16)
+    ax.set_ylabel("Voltage", fontsize=14)
+    ax.set_xlabel("Time(s)", fontsize=14)
+
+
+#    canvas = FigureCanvasTkAgg(fig, master=window)
+#    canvas.get_tk_widget().pack()
+    canvas.draw()
+#    fig.canvas.draw()
+#        fig.canvas.mpl_connect('pick_event', onpick)
+    fig.canvas.mpl_connect('pick_event', on_pick)
+#    print('hi')
+#    print(t2)
+
+window= Tk()
+button = Button(window, text="check", command=plot)
+button.grid(row = 0)
+#button_2 = Button(window, text='Previous Page', accelerator = 'D', command = previous_page)
+button_2 = Button(window, text='Previous Page', command = previous_page)
+
+button_2.grid(row = 1, column = 0, sticky = W)
+#button_1 = Button(window, text='Next Page', accelerator = 'A', command = next_page)
+button_1 = Button(window, text='Next Page', command = next_page)
+
+button_1.grid(row = 1, column = 0, sticky = E)
+
+qqq = IntVar()
+
+radio_1 = Radiobutton(window, text = 'Low', command = count_low, variable = qqq, value = 1)
+#radio_1.deselect()
+radio_1.grid(row=0, column= 0, sticky = W)
+radio_2 = Radiobutton(window, text = 'High', command = count_high, variable = qqq, value = 2)
+#radio_2.deselect()
+radio_2.grid(row=0, column= 0, sticky = E)
+#l = Label(root, text = '')
+#l.pack()
+
+
+
+quitbtn = Button(window, text = 'Quit', command = window.destroy)
+quitbtn.grid(row = 2)
+canvas = FigureCanvasTkAgg(fig, master=window)
+
+
+#canvas.bind('<Button-3>', add_nan)
+
+canvas.get_tk_widget().bind('<Button-3>', add_nan)
+canvas.get_tk_widget().grid(row = 3)
+
+
+
+
+
+
+window.title('HR Counter')
+window.geometry('1200x700')
+#start= mclass (window)
+
+window.mainloop()
+
+
+
+
+#cid = fig.canvas.mpl_connect('button_press_event', onclick)
+
+#
+#def on_pick(event):
+#    line = event.artist
+#    xdata, ydata = line.get_data()
+#    ind = event.ind
+#    print('on pick line:', np.array([xdata[ind], ydata[ind]]).T)
+#
+
+
+#cid = fig.canvas.mpl_connect('pick_event', on_pick)
+
+    
+        
+
+#以下ポイントピック
+#line, = ax.plot(np.random.rand(100), 'o', picker=5) 
+#
+#def onpick(event):
+#    thisline = event.artist
+#    xdata = thisline.get_xdata()
+#    ydata = thisline.get_ydata()
+#    ind = event.ind
+#    points = tuple(zip(xdata[ind], ydata[ind]))
+#    print('onpick points:', points)
+#
+#fig.canvas.mpl_connect('pick_event', onpick)
+#
+#plt.show()
+
+
 
 
 #class mclass:
@@ -288,101 +424,5 @@ def count_high():
 ##        points_1 = round(points[0], 6)
 ##        points_2 = round(points[1], 6)
 ##        print('onpick points:', tuple(points_1, points_2))
-
-
-def plot():
-#        t2 = v_time[1:200]
-#        v2 = v_volt_hb[1:200]
-    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
-#    global ax, fig, canvas, t2, v2, window
-#    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
-
-#    fig = Figure(figsize=(6,6))
-#    ax = fig.add_subplot(111)
-    ax.plot(t2, v2, 'o-', picker=1)
-#    ax.invert_yaxis()
-
-    
-    pretitle =('%d ~ %d' % (i_200,i_400))
-    ax.set_title (str(pretitle), fontsize=16)
-    ax.set_ylabel("Voltage", fontsize=14)
-    ax.set_xlabel("Time(s)", fontsize=14)
-
-
-#    canvas = FigureCanvasTkAgg(fig, master=window)
-#    canvas.get_tk_widget().pack()
-    canvas.draw()
-#    fig.canvas.draw()
-#        fig.canvas.mpl_connect('pick_event', onpick)
-    fig.canvas.mpl_connect('pick_event', on_pick)
-#    print('hi')
-#    print(t2)
-
-window= Tk()
-button = Button(window, text="check", command=plot)
-button.grid(row = 0)
-button_2 = Button(window, text='Previous Page', command = previous_page)
-button_2.grid(row = 1, column = 0, sticky = W)
-button_1 = Button(window, text='Next Page', command = next_page)
-button_1.grid(row = 1, column = 0, sticky = E)
-
-radio_1 = Radiobutton(window, text = 'Low', command = count_low)
-radio_1.deselect()
-radio_1.grid(row=0, column= 0, sticky = W)
-radio_2 = Radiobutton(window, text = 'High', command = count_high)
-radio_2.deselect()
-radio_2.grid(row=0, column= 0, sticky = E)
-#l = Label(root, text = '')
-#l.pack()
-
-
-
-quitbtn = Button(window, text = 'Quit', command = window.destroy)
-quitbtn.grid(row = 2)
-canvas = FigureCanvasTkAgg(fig, master=window)
-canvas.get_tk_widget().grid(row = 3)
-
-
-
-
-window.title('HR Counter')
-window.geometry('1200x700')
-#start= mclass (window)
-
-window.mainloop()
-
-
-
-
-#cid = fig.canvas.mpl_connect('button_press_event', onclick)
-
-#
-#def on_pick(event):
-#    line = event.artist
-#    xdata, ydata = line.get_data()
-#    ind = event.ind
-#    print('on pick line:', np.array([xdata[ind], ydata[ind]]).T)
-#
-
-
-#cid = fig.canvas.mpl_connect('pick_event', on_pick)
-
-    
-        
-
-#以下ポイントピック
-#line, = ax.plot(np.random.rand(100), 'o', picker=5) 
-#
-#def onpick(event):
-#    thisline = event.artist
-#    xdata = thisline.get_xdata()
-#    ydata = thisline.get_ydata()
-#    ind = event.ind
-#    points = tuple(zip(xdata[ind], ydata[ind]))
-#    print('onpick points:', points)
-#
-#fig.canvas.mpl_connect('pick_event', onpick)
-#
-#plt.show()
 
 
