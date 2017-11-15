@@ -177,7 +177,7 @@ def on_pick(event):
     f.close()
 
 i = 1
-fig = Figure(figsize=(6,6))
+fig = Figure(figsize=(12,6))
 ax = fig.add_subplot(111)
 #i_200 = 1
 #i_400 = 200
@@ -300,7 +300,7 @@ def plot():
 #    fig = Figure(figsize=(6,6))
 #    ax = fig.add_subplot(111)
     ax.plot(t2, v2, 'o-', picker=1)
-    ax.invert_yaxis()
+#    ax.invert_yaxis()
 
     
     pretitle =('%d ~ %d' % (i_200,i_400))
@@ -346,7 +346,7 @@ canvas.get_tk_widget().grid(row = 3)
 
 
 window.title('HR Counter')
-window.geometry('600x700')
+window.geometry('1200x700')
 #start= mclass (window)
 
 window.mainloop()
