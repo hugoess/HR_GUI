@@ -108,10 +108,10 @@ def is_guusuu(xx:list, yy:list):
     for x in range(len(volt_hb_splitted)):
         if x % 2 == 0:            
             xx.extend(volt_hb_splitted[x])
-            xx.extend(np.array([nan]))
+            xx.extend(np.array([8]))
         if x % 2 == 1:
             yy.extend(volt_hb_splitted[x])
-            yy.extend(np.array([nan]))
+            yy.extend(np.array([8]))
 
 
 is_guusuu(volt_hb_low, volt_hb_high)
@@ -142,6 +142,8 @@ volt_hb_high = np.array(volt_hb_high)
 
 t2 = v_time[1:200]
 v2 = v_volt_hb[1:200]
+v_current = np.array([])
+
 
 i = 1
 fig = Figure(figsize=(12,6))
@@ -212,7 +214,7 @@ def add_nan(event):
 
 def next_page():
     '''ボタンクリックで次のページ'''
-    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
 #    global ax, fig, canvas, t2, v2, window,
 #    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
 
@@ -220,7 +222,7 @@ def next_page():
     i_200 = (i-1)*200+1
     i_400 = i*200
     t2 = v_time[i_200:i_400]
-    v2 = volt_hb_high[i_200:i_400]
+    v2 = v_current[i_200:i_400]
 #    if qqq == 1: 
 #        t2 = v_time[i_200:i_400]
 #        v2 = volt_hb_low[i_200:i_400]
@@ -230,6 +232,8 @@ def next_page():
 #        v2 = volt_hb_high[i_200:i_400]   
     
     print('%d ~ %d' % (i_200,i_400))
+#    print(v2)
+
     ax.clear()
     plot()
     
@@ -237,7 +241,7 @@ def previous_page():
     
     '''ボタンクリックで前のページ'''
     
-    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
 #    global ax, fig, canvas, t2, v2, window
 #    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
 
@@ -245,7 +249,7 @@ def previous_page():
     i_200 = (i-1)*200+1
     i_400 = i*200
     t2 = v_time[i_200:i_400]
-    v2 = volt_hb_high[i_200:i_400]
+    v2 = v_current[i_200:i_400]
 #    if qqq == 1: 
 #        t2 = v_time[i_200:i_400]
 #        v2 = volt_hb_low[i_200:i_400]
@@ -255,6 +259,7 @@ def previous_page():
 #        v2 = volt_hb_high[i_200:i_400]        
         
     print('%d ~ %d' % (i_200,i_400))
+#    print(v2)
     ax.clear()
     plot()
 
@@ -286,7 +291,7 @@ def plot():
     '''
 #        t2 = v_time[1:200]
 #        v2 = v_volt_hb[1:200]
-    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,v_volt_high, v_volt_low
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
 #    global ax, fig, canvas, t2, v2, window
 #    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
 
@@ -323,11 +328,48 @@ button_1 = Button(window, text='Next Page', command = next_page)
 button_1.grid(row = 1, column = 0, sticky = E)
 
 qqq = IntVar()
+COLOR1 = 'Blue'
+COLOR2 = 'Gold'
+COLOR3 = 'Red'
 
-radio_1 = Radiobutton(window, text = 'Low', command = count_low, variable = qqq, value = 1)
+def low_or_high():
+
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
+
+    radSel = qqq.get()
+    if radSel == 1:
+        window.configure(background = COLOR1)
+        v_current = volt_hb_low
+#        if v_current == volt_hb_low:
+#            print('yes')
+#        else:
+#            print('no')
+        
+        
+    elif radSel == 2:
+        window.configure(background = COLOR2)
+        v_current = volt_hb_high
+
+#        if v_current == volt_hb_high:
+#            print('yes')
+#        else:
+#            print('no')
+
+    print(radSel)
+
+
+
+
+
+
+
+#radio_1 = Radiobutton(window, text = 'Low', command = count_low, variable = qqq, value = 1)
 #radio_1.deselect()
+radio_1 = Radiobutton(window, text = 'Low', variable = qqq, value = 1, command=low_or_high)
 radio_1.grid(row=0, column= 0, sticky = W)
-radio_2 = Radiobutton(window, text = 'High', command = count_high, variable = qqq, value = 2)
+
+#radio_2 = Radiobutton(window, text = 'High', command = count_high, variable = qqq, value = 2)
+radio_2 = Radiobutton(window, text = 'High', variable = qqq, value = 2, command=low_or_high)
 #radio_2.deselect()
 radio_2.grid(row=0, column= 0, sticky = E)
 
@@ -336,7 +378,7 @@ quitbtn.grid(row = 2)
 
 canvas = FigureCanvasTkAgg(fig, master=window)      #FigをFigureCanvasTkAggというTypeにしてできたObjectをCanvasと名付けている。また、Windowが親であるというOptionも
 canvas.get_tk_widget().bind('<Button-3>', add_nan)
-canvas.get_tk_widget().grid(row = 3)  #canvas.get_tk_widget()でcanvas = FigureCanvasTkAggをｔｋのwidgetにする。でないと、Bindメソッドが使えない
+canvas.get_tk_widget().grid(row = 3, columnspan = 4)  #canvas.get_tk_widget()でcanvas = FigureCanvasTkAggをｔｋのwidgetにする。でないと、Bindメソッドが使えない
 
 
 
