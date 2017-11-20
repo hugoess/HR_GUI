@@ -99,29 +99,41 @@ for n in range(len(v_volt_on_off)):
 #        v_data_2.append(n)
 
 volt_hb_splitted = np.split(v_volt_hb, v_data_1)
-
+volt_time_splitted = np.split(v_time, v_data_1)
 
 
 volt_hb_low =[]
 volt_hb_high=[]
-def is_guusuu(xx:list, yy:list):
-    for x in range(len(volt_hb_splitted)):
+v_time_low=[]
+v_time_high=[]
+
+
+def is_guusuu(xx:list, yy:list, zz:list):
+    for r in zz:
+        r = r+1
+        guu.extend(zz[r]-zz[r-1])
+    
+    for x in range(len(zz)):
         if x % 2 == 0:            
-            xx.extend(volt_hb_splitted[x])
-            xx.extend(np.array([8]))
+            xx.extend(zz[x])
+            
+            
+            v_data_
+            xx.extend(np.array([5.5]))
         if x % 2 == 1:
-            yy.extend(volt_hb_splitted[x])
-            yy.extend(np.array([8]))
+            yy.extend(zz[x])
+            yy.extend(np.array([5.5]))
 
 
-is_guusuu(volt_hb_low, volt_hb_high)
+is_guusuu(volt_hb_low, volt_hb_high, volt_hb_splitted)
 
 volt_hb_low = np.array(volt_hb_low)
 volt_hb_high = np.array(volt_hb_high)
 
+is_guusuu(v_time_low, v_time_high, volt_time_splitted)
 
-
-        
+v_time_low = np.array(v_time_low)
+v_time_high = np.array(v_time_high)
         
 #        
 #        time_1.append(time[n])
@@ -143,6 +155,7 @@ volt_hb_high = np.array(volt_hb_high)
 t2 = v_time[1:200]
 v2 = v_volt_hb[1:200]
 v_current = np.array([])
+v_time_current = np.array([])
 
 
 i = 1
@@ -217,11 +230,11 @@ def next_page():
     global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
 #    global ax, fig, canvas, t2, v2, window,
 #    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
-
+    global v_time_current, v_time_low
     i = i+1
     i_200 = (i-1)*200+1
     i_400 = i*200
-    t2 = v_time[i_200:i_400]
+    t2 = v_time_current[i_200:i_400]
     v2 = v_current[i_200:i_400]
 #    if qqq == 1: 
 #        t2 = v_time[i_200:i_400]
@@ -240,7 +253,7 @@ def next_page():
 def previous_page():
     
     '''ボタンクリックで前のページ'''
-    
+    global v_time_current, v_time_low
     global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
 #    global ax, fig, canvas, t2, v2, window
 #    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
@@ -248,7 +261,7 @@ def previous_page():
     i = i -1
     i_200 = (i-1)*200+1
     i_400 = i*200
-    t2 = v_time[i_200:i_400]
+    t2 = v_time_current[i_200:i_400]
     v2 = v_current[i_200:i_400]
 #    if qqq == 1: 
 #        t2 = v_time[i_200:i_400]
@@ -262,20 +275,49 @@ def previous_page():
 #    print(v2)
     ax.clear()
     plot()
+#
+#def count_low():
+#    
+#    pass
+#    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
+#
+#    v2 = volt_hb_low[1:200]
+#    
+#    
+#def count_high():
+#    
+#    pass
+#    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
+#    
+def low_or_high():
 
-def count_low():
-    
-    pass
-    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
+    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
+    global v_time_current, v_time_low
+    radSel = qqq.get()
+    if radSel == 1:
+        window.configure(background = COLOR1)
+        v_current = volt_hb_low
+        v_time_current = v_time_low
+#        if v_current == volt_hb_low:
+#            print('yes')
+#        else:
+#            print('no')
+        
+        
+    elif radSel == 2:
+        window.configure(background = COLOR2)
+        v_current = volt_hb_high
+        v_time_current = v_time_high
 
-    v2 = volt_hb_low[1:200]
-    
-    
-def count_high():
-    
-    pass
-    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
-    
+#        if v_current == volt_hb_high:
+#            print('yes')
+#        else:
+#            print('no')
+
+    print(radSel)
+
+
+
 
 
 
@@ -331,33 +373,6 @@ qqq = IntVar()
 COLOR1 = 'Blue'
 COLOR2 = 'Gold'
 COLOR3 = 'Red'
-
-def low_or_high():
-
-    global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
-
-    radSel = qqq.get()
-    if radSel == 1:
-        window.configure(background = COLOR1)
-        v_current = volt_hb_low
-#        if v_current == volt_hb_low:
-#            print('yes')
-#        else:
-#            print('no')
-        
-        
-    elif radSel == 2:
-        window.configure(background = COLOR2)
-        v_current = volt_hb_high
-
-#        if v_current == volt_hb_high:
-#            print('yes')
-#        else:
-#            print('no')
-
-    print(radSel)
-
-
 
 
 
