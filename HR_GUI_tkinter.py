@@ -45,9 +45,9 @@ matplotlib.use('TkAgg')
 
 #--------------------------------------------------------------
 #%%
-filename = "20171023_64(vs 66).lvm"
+filename = "20171023_64(vs 66)"
 
-f = open(filename)
+f = open(filename + '.lvm')
 line = f.readline() # 1行を文字列として読み込む(改行文字も含まれる)
 
 v_time          = []
@@ -108,21 +108,43 @@ v_time_low=[]
 v_time_high=[]
 
 
+#def is_guusuu(xx:list, yy:list, zz:list):
+#    for r in zz:
+#        r = r+1
+#        guu.extend(zz[r]-zz[r-1])
+#    
+#    for x in range(len(zz)):
+#        if x % 2 == 0:            
+#            xx.extend(zz[x])
+#            
+#            
+#            v_data_
+#            xx.extend(np.array([5.5]))
+#        if x % 2 == 1:
+#            yy.extend(zz[x])
+#            yy.extend(np.array([5.5]))
+
 def is_guusuu(xx:list, yy:list, zz:list):
-    for r in zz:
-        r = r+1
-        guu.extend(zz[r]-zz[r-1])
-    
+#    for r in zz:
+#        r = r+1
+#        guu.extend(zz[r]-zz[r-1])
+#    
     for x in range(len(zz)):
         if x % 2 == 0:            
             xx.extend(zz[x])
-            
-            
-            v_data_
-            xx.extend(np.array([5.5]))
+            if x < len(zz):
+                zerosx = np.zeros_like(zz[x+1])
+                zerosx = zerosx + 5.5
+                xx.extend(zerosx)
         if x % 2 == 1:
+            zerosy = np.zeros_like(zz[x-1])
+            zerosy = zerosy + 5.5
+            yy.extend(zerosy)
             yy.extend(zz[x])
-            yy.extend(np.array([5.5]))
+            if x+1 == len(zz)-1:
+                zerosy = np.zeros_like(zz[x+1])
+                zerosy = zerosy + 5.5
+                yy.extend(zerosy)
 
 
 is_guusuu(volt_hb_low, volt_hb_high, volt_hb_splitted)
@@ -130,11 +152,11 @@ is_guusuu(volt_hb_low, volt_hb_high, volt_hb_splitted)
 volt_hb_low = np.array(volt_hb_low)
 volt_hb_high = np.array(volt_hb_high)
 
-is_guusuu(v_time_low, v_time_high, volt_time_splitted)
-
-v_time_low = np.array(v_time_low)
-v_time_high = np.array(v_time_high)
-        
+#is_guusuu(v_time_low, v_time_high, volt_time_splitted)
+#
+#v_time_low = np.array(v_time_low)
+#v_time_high = np.array(v_time_high)
+#        
 #        
 #        time_1.append(time[n])
 #        volt_hb_1.append(volt_hb[n])
@@ -156,7 +178,9 @@ t2 = v_time[1:200]
 v2 = v_volt_hb[1:200]
 v_current = np.array([])
 v_time_current = np.array([])
-
+v_output_name = 'Hi'
+v_output_high = 'High'
+v_output_low = 'Low'
 
 i = 1
 fig = Figure(figsize=(12,6))
@@ -202,24 +226,29 @@ ax = fig.add_subplot(111)
 
 def on_pick(event):
     '''Pick eventとText fileへの書き込み'''
+    global v_output_name, v_output_high, v_output_low
     line = event.artist
     xdata, ydata = line.get_data()
     ind = event.ind
 #    print('on pick line:', np.array([xdata[ind], ydata[ind]]).T)
     print([xdata[ind], ydata[ind]])
 #    kkk = np.array([xdata[ind], ydata[ind]])
-    f = open('result.txt', 'a')
+#    f = open('result.txt', 'a')
+    
+    
+    f = open(filename + '__' + v_output_name +'.txt', 'a')
+
     f.write(str(xdata[ind][0]) + '\t' + str(ydata[ind][0]) + '\n')
     f.close()
 
 
-#i_200 = 1
-#i_400 = 200
-
 
 def add_nan(event):
     '''Right clickでnanを書き込む機能、心拍計算時のノイズ対策のために作った'''
-    f = open('result.txt', 'a')
+    global v_output_name, v_output_high, v_output_low
+    
+    
+    f = open(filename + '__' + v_output_name +'.txt', 'a')
     f.write('nan'+ '\t' +'nan'+'\n')
     f.close()
     print('nan')
@@ -228,13 +257,12 @@ def add_nan(event):
 def next_page():
     '''ボタンクリックで次のページ'''
     global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
-#    global ax, fig, canvas, t2, v2, window,
-#    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
-    global v_time_current, v_time_low
+    global v_time_current, v_time_low, v_output_name, v_output_high, v_output_low
     i = i+1
     i_200 = (i-1)*200+1
     i_400 = i*200
-    t2 = v_time_current[i_200:i_400]
+#    t2 = v_time_current[i_200:i_400]
+    t2 = v_time[i_200:i_400]
     v2 = v_current[i_200:i_400]
 #    if qqq == 1: 
 #        t2 = v_time[i_200:i_400]
@@ -253,7 +281,7 @@ def next_page():
 def previous_page():
     
     '''ボタンクリックで前のページ'''
-    global v_time_current, v_time_low
+    global v_time_current, v_time_low, v_output_name, v_output_high, v_output_low
     global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
 #    global ax, fig, canvas, t2, v2, window
 #    nonlocal ax, fig, canvas, t2, v2, window, i_200, i_400
@@ -261,7 +289,8 @@ def previous_page():
     i = i -1
     i_200 = (i-1)*200+1
     i_400 = i*200
-    t2 = v_time_current[i_200:i_400]
+#    t2 = v_time_current[i_200:i_400]
+    t2 = v_time[i_200:i_400]
     v2 = v_current[i_200:i_400]
 #    if qqq == 1: 
 #        t2 = v_time[i_200:i_400]
@@ -275,29 +304,19 @@ def previous_page():
 #    print(v2)
     ax.clear()
     plot()
-#
-#def count_low():
-#    
-#    pass
-#    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
-#
-#    v2 = volt_hb_low[1:200]
-#    
-#    
-#def count_high():
-#    
-#    pass
-#    global ax, fig, canvas, t2, v2, window, i_200, i_400, i
-#    
+  
 def low_or_high():
 
     global ax, fig, canvas, t2, v2, window, i_200, i_400, i,volt_hb_high, volt_hb_low, v_current
-    global v_time_current, v_time_low
+    global v_time_current, v_time_low, v_output_name, v_output_high, v_output_low
     radSel = qqq.get()
     if radSel == 1:
         window.configure(background = COLOR1)
         v_current = volt_hb_low
         v_time_current = v_time_low
+        v_output_name = v_output_low
+        print('Low')
+
 #        if v_current == volt_hb_low:
 #            print('yes')
 #        else:
@@ -308,24 +327,16 @@ def low_or_high():
         window.configure(background = COLOR2)
         v_current = volt_hb_high
         v_time_current = v_time_high
-
+        v_output_name = v_output_high
+        print('High')
 #        if v_current == volt_hb_high:
 #            print('yes')
 #        else:
 #            print('no')
-
+    
     print(radSel)
 
-
-
-
-
-
-
-
-def plot():
-    
-    
+def plot():  
     '''FigのSubplotであるaxを指定されているt2,v2でPlotする。
     タイトルやラベルなどの設定、
     FigをFigureCanvasTkAggというTypeにしてCanvasと名付けているので、Canvasで描画する指令、
@@ -340,9 +351,7 @@ def plot():
 #    fig = Figure(figsize=(6,6))
 #    ax = fig.add_subplot(111)
     ax.plot(t2, v2, 'o-', picker=1)
-#    ax.invert_yaxis()
-
-    
+#    ax.invert_yaxis()  
     pretitle =('%d ~ %d' % (i_200,i_400))
     ax.set_title (str(pretitle), fontsize=16)
     ax.set_ylabel("Voltage", fontsize=14)
@@ -394,11 +403,6 @@ quitbtn.grid(row = 2)
 canvas = FigureCanvasTkAgg(fig, master=window)      #FigをFigureCanvasTkAggというTypeにしてできたObjectをCanvasと名付けている。また、Windowが親であるというOptionも
 canvas.get_tk_widget().bind('<Button-3>', add_nan)
 canvas.get_tk_widget().grid(row = 3, columnspan = 4)  #canvas.get_tk_widget()でcanvas = FigureCanvasTkAggをｔｋのwidgetにする。でないと、Bindメソッドが使えない
-
-
-
-
-
 
 window.title('HR Counter')
 window.geometry('1200x700')      #横ｘ縦
