@@ -37,8 +37,8 @@ dir = "C:\\Users\\admin\\Desktop\\サルビデオ解析\\heartbeat rate"
 import sys; sys.path.append(dir)
 #import subfuncs as myfunc
 
-import matplotlib
-matplotlib.use('TkAgg')
+#import matplotlib
+#matplotlib.use('TkAgg')
 
 
 
