@@ -321,45 +321,45 @@ label_low.grid(column = 3, row = 0, sticky = W)
 label_high = Label(window, text = 'high')
 label_high.grid(column = 3, row = 0, sticky = E)
 
-def chkprint(*args):
-    flg = 1
-    for obj in args:
-        for k, v in globals().items():
-            if id(v) == id(obj):
-                target = k
-                break
-        if flg == 1:
-#            out = target+' = '+str(obj)
-            out = target
-            flg = 0
-        else:
-#            out += ', '+target+' = '+str(obj)           
-            out += ', '+target
-    return out
-    print(out)
+#def chkprint(*args):
+#    flg = 1
+#    for obj in args:
+#        for k, v in globals().items():
+#            if id(v) == id(obj):
+#                target = k
+#                break
+#        if flg == 1:
+##            out = target+' = '+str(obj)
+#            out = target
+#            flg = 0
+#        else:
+##            out += ', '+target+' = '+str(obj)           
+#            out += ', '+target
+#    return out
+#    print(out)
 
-def Heart_split(high_or_low_data):
-    global listname, listname_2
-    exec(chkprint(high_or_low_data) + '_split' + '= []')
-    exec(chkprint(high_or_low_data) + '_splitted' + '= []')
-#    ttt = eval(chkprint(high_or_low_data) + '_split' + '= []')
-
-#    listname = chkprint(high_or_low_data) + '_split'
-
-    for a in range(len(high_or_low_data)):
-        if high_or_low_data[a] == nan:
-#            globals()[chkprint(high_or_low_data) + 'global_val']
-            split_number = eval(chkprint(high_or_low_data) + '_split')
-            split_number.append(a)
-        
-#        split_number = numpy.array(split_number)
-        numpy_list = np.array(high_or_low_data)
-        splitted_list = eval(chkprint(high_or_low_data) + '_splitted')
-        splitted_list = np.split(numpy_list, split_number)
-            
-
-
-def Heartrate_computation(high_x, high_y, low_x, low_y):
+#def Heart_split(high_or_low_data):
+#    global listname, listname_2
+#    exec(chkprint(high_or_low_data) + '_split' + '= []')
+#    exec(chkprint(high_or_low_data) + '_splitted' + '= []')
+##    ttt = eval(chkprint(high_or_low_data) + '_split' + '= []')
+#
+##    listname = chkprint(high_or_low_data) + '_split'
+#
+#    for a in range(len(high_or_low_data)):
+#        if high_or_low_data[a] == nan:
+##            globals()[chkprint(high_or_low_data) + 'global_val']
+#            split_number = eval(chkprint(high_or_low_data) + '_split')
+#            split_number.append(a)
+#        
+##        split_number = numpy.array(split_number)
+#        numpy_list = np.array(high_or_low_data)
+#        splitted_list = eval(chkprint(high_or_low_data) + '_splitted')
+#        splitted_list = np.split(numpy_list, split_number)
+#            
+#
+#
+#def Heartrate_computation(high_x, high_y, low_x, low_y):
 
 #            
 #            
@@ -378,9 +378,9 @@ def Heartrate_computation(high_x, high_y, low_x, low_y):
 #    
     
     
-    pass
-    label_2 = Label(window, text = 'A Label')
-    label_2.grid(column = 3, row = 1)
+#    pass
+#    label_2 = Label(window, text = 'A Label')
+#    label_2.grid(column = 3, row = 1)
 
 window.mainloop()
 
