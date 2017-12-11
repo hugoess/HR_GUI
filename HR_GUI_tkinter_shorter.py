@@ -90,7 +90,7 @@ v_data_2=[]
 
 for n in range(len(v_volt_on_off)):
 
-    if ((v_volt_on_off[n-1] <= 5) and (v_volt_on_off[n] >= 8)) or ((v_volt_on_off[n-1] >= 8) and (v_volt_on_off[n] <= 5)):
+    if ((v_volt_on_off[n-1] <= 7.9) and (v_volt_on_off[n] >= 8)) or ((v_volt_on_off[n-1] >= 8) and (v_volt_on_off[n] <= 7.9)):
         v_data_1.append(n) 
 
 volt_hb_splitted = np.split(v_volt_hb, v_data_1)
@@ -117,7 +117,7 @@ def is_guusuu(xx:list, yy:list, zz:list):
     for x in range(len(zz)):
         if x % 2 == 0:            
             xx.extend(zz[x])
-            if x < len(zz):
+            if x+1 < len(zz):
                 zerosx = np.zeros_like(zz[x+1])
                 zerosx = zerosx + 5.5
                 xx.extend(zerosx)

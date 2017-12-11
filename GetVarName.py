@@ -178,5 +178,13 @@ x = [1, 2, 3]
 y = copy(x)  # y = x[:]でも良い (むしろこっちのほうがシンプル)
 y[0] = 999
 
+#%%
+
+
+import datetime
+today = datetime.datetime.now()
+str(today)
+
+repr(today)
 
 
