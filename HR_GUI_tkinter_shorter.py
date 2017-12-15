@@ -42,7 +42,7 @@ import sys; sys.path.append(dir)
 
 #--------------------------------------------------------------
 #%%
-filename = "20171023_64(vs 66)"
+filename = "20171020_64(vs 66)"
 
 f = open(filename + '.lvm')
 line = f.readline() # 1行を文字列として読み込む(改行文字も含まれる)
